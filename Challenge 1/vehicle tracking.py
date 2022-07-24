@@ -1,11 +1,10 @@
 import cv2
 import os
-import re
 import numpy as np
 from os.path import isfile, join
 import matplotlib.pyplot as plt
 
-vid_name = '2'
+vid_name = '1'
 vid = vid_name + '.mp4'
 # split video into frames
 capture = cv2.VideoCapture('video/'+vid)
