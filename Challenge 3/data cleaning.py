@@ -8,4 +8,4 @@ def checkmailsyntax(email):
     
 
 
-s = checkmailsyntax(".Emil[y_Kli#%ne36@mail.com")
+s = checkmailsyntax("Emil[y_Kli#%ne36@mail.com")
