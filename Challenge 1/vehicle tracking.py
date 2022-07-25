@@ -1,6 +1,7 @@
 import cv2
 import os
 import re
+import imutils
 import numpy as np
 from os.path import isfile, join
 import matplotlib.pyplot as plt
@@ -26,27 +27,15 @@ capture.release()
 
 col_frames = os.listdir('frames_{}/'.format(vid_name))
 
-# empty list to store the frames
 col_images=[]
 
 for i in col_frames:
-    # read the frames
     img = cv2.imread('frames_{}/'.format(vid_name)+i)
-    # append the frames to the list
     col_images.append(img)
 
 i = 0
-
-for frame in [i, i+1]:
-    plt.imshow(cv2.cvtColor(col_images[frame], cv2.COLOR_BGR2RGB))
-    plt.title("frame: "+str(frame))
-    plt.show()
-
 length = col_images[i].shape[0]
 width = col_images[i].shape[1]
-
-print(length)
-print(width)
 
 # kernel for image dilation
 kernel = np.ones((5,5),np.uint8)
@@ -56,16 +45,16 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 
 # directory to save the output frames
 pathIn = 'contours_{}/'.format(vid_name)
+pathIn2 = 'plates_{}/'.format(vid_name)
 
-print(len(col_images))
 for i in range(len(col_images)-1):
-    
+    ### vehicle detection ###
     # find difference between every two frames
     grayA = cv2.cvtColor(col_images[i], cv2.COLOR_BGR2GRAY)
     grayB = cv2.cvtColor(col_images[i+1], cv2.COLOR_BGR2GRAY)
     diff_image = cv2.absdiff(grayB, grayA)
     
-    # thresholding to convert to binary image
+    # convert to binary image using threshold
     ret, thresh = cv2.threshold(diff_image, 15, 255, cv2.THRESH_BINARY)
     
     # image dilation
@@ -86,9 +75,12 @@ for i in range(len(col_images)-1):
             
 
     # add contours to original frames
-    dmy = col_images[i].copy()
-    cv2.drawContours(dmy, valid_cntrs, -1, (127,200,0), 2)
+    v = col_images[i].copy()
+    cv2.drawContours(v, valid_cntrs, -1, (127,200,0), 2)
     
-    cv2.putText(dmy, "vehicles detected: " + str(len(valid_cntrs)), (100, 50), font, 2.0, (0, 180, 0), 2)
-    cv2.line(dmy, (0, 80),(256,80),(100, 255, 255))
-    cv2.imwrite(pathIn+str(i)+'.png',dmy)  
+    cv2.putText(v, "vehicles detected: " + str(len(valid_cntrs)), (100, 50), font, 2.0, (0, 180, 0), 2)
+    cv2.line(v, (0, 80),(256,80),(100, 255, 255))
+    cv2.imwrite(pathIn+str(i)+'.png',v)  
+    ### vehicle detection ###
+
+
